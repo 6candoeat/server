@@ -1,1 +1,2 @@
-# server
+# Dr_Food_BE
+2024 K-DIGITAL TRAINING HACKATHON
