@@ -1,4 +1,4 @@
-package com._candoit.drfood.global.enums;
+package com._candoit.drfood.domain.enums;
 
 public enum Category {
     KOREAN,

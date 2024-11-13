@@ -2,9 +2,9 @@ package com._candoit.drfood.menu.service;
 
 import com._candoit.drfood.global.enums.ReturnCode;
 import com._candoit.drfood.global.exception.DrFoodLogicException;
-import com._candoit.drfood.menu.domain.Ingredient;
-import com._candoit.drfood.menu.domain.Menu;
-import com._candoit.drfood.menu.domain.Nutrition;
+import com._candoit.drfood.domain.Ingredient;
+import com._candoit.drfood.domain.Menu;
+import com._candoit.drfood.domain.Nutrition;
 import com._candoit.drfood.menu.repository.IngredientRepository;
 import com._candoit.drfood.menu.repository.MenuRepository;
 import com._candoit.drfood.menu.repository.NutritionRepository;

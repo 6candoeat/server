@@ -1,9 +1,9 @@
 package com._candoit.drfood.menu.controller;
 
 import com._candoit.drfood.global.response.ApiResponse;
-import com._candoit.drfood.menu.domain.Ingredient;
-import com._candoit.drfood.menu.domain.Menu;
-import com._candoit.drfood.menu.domain.Nutrition;
+import com._candoit.drfood.domain.Ingredient;
+import com._candoit.drfood.domain.Menu;
+import com._candoit.drfood.domain.Nutrition;
 import com._candoit.drfood.menu.service.MenuService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

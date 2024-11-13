@@ -1,7 +1,7 @@
 package com._candoit.drfood.menu.repository;
 
-import com._candoit.drfood.menu.domain.Menu;
-import com._candoit.drfood.menu.domain.Nutrition;
+import com._candoit.drfood.domain.Menu;
+import com._candoit.drfood.domain.Nutrition;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

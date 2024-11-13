@@ -1,4 +1,4 @@
-package com._candoit.drfood.domain;
+package com._candoit.drfood.domain.enums;
 
 public enum DietControl {
     STRICT,NORMAL
