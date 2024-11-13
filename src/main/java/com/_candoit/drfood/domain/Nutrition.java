@@ -1,4 +1,4 @@
-package com._candoit.drfood.menu.domain;
+package com._candoit.drfood.domain;
 
 import com._candoit.drfood.global.DateTimeEntity;
 import jakarta.persistence.*;
