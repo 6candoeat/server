@@ -1,17 +1,18 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/6CANDOEAT?serverTimezone=UTC&characterEncoding=UTF-8
-    username: root
-    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://34.47.89.53:3306/dr.food?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC&createDatabaseIfNotExist=true
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         show_sql: true
         format_sql: true
+
+  profiles:
+    include: secret
 
 logging.level:
   org.hibernate.SQL: debug
