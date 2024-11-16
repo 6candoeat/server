@@ -2,16 +2,18 @@ package com._candoit.drfood.service;
 
 import com._candoit.drfood.domain.Drug;
 import com._candoit.drfood.repository.DrugRepository;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @Service
 public class DrugQueryService {
@@ -45,12 +47,41 @@ public class DrugQueryService {
                 .orElse("Unknown Disease Category");
     }
 
-//    public String saveDrugsFromCsv(MultipartFile file) throws Exception{
-//        if (file.isEmpty()) {
-//            throw new Exception("파일이 비어있습니다.");
-//        }
-//
-//        Reader reader = new InputStreamReader(file.getInputStream());
-//        Iterator<CSVRecord> records = CSVFOR
-//    }
+    public int processCSV(MultipartFile file) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
+        CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader());
+        int processedCount = 0;
+
+        for (CSVRecord record : csvParser) {
+            Long drugCode = Long.parseLong(record.get("drugCode"));
+            String drugName = record.get("drugName");
+            String companyName = record.get("companyName");
+            String drugCategory = record.get("drugCategory");
+            String diseaseCategory = record.get("diseaseCategory");
+
+            // 기존 데이터 확인
+            Optional<Drug> existingDrug = drugRepository.findByDrugCode(drugCode);
+            if (existingDrug.isPresent()) {
+                // 데이터가 이미 존재하면 diseaseCategory 업데이트
+                Drug drug = existingDrug.get();
+                if (!drug.getDiseaseCategory().contains(diseaseCategory)) {
+                    drug.setDiseaseCategory(drug.getDiseaseCategory() + "," + diseaseCategory);
+                    drugRepository.save(drug);
+                }
+            } else {
+                // 새 데이터 저장
+                Drug newDrug = new Drug();
+                newDrug.setDrugCode(drugCode);
+                newDrug.setDrugName(drugName);
+                newDrug.setCompanyName(companyName);
+                newDrug.setDrugCategory(drugCategory);
+                newDrug.setDiseaseCategory(diseaseCategory);
+                drugRepository.save(newDrug);
+            }
+            processedCount++;
+        }
+
+        csvParser.close();
+        return processedCount;
+    }
 }
