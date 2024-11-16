@@ -2,6 +2,7 @@ package com._candoit.drfood.domain;
 
 import com._candoit.drfood.domain.enums.DietControl;
 import com._candoit.drfood.domain.enums.ExerciseStatus;
+import com._candoit.drfood.domain.enums.Gender;
 import com._candoit.drfood.domain.enums.UserDisease;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,7 +18,9 @@ public class Member {
 
     @Id @GeneratedValue
     @Column(name = "user_id")
-    private Long id;
+    private Long userId;
+
+    private String id;
 
     private String password;
 
@@ -27,6 +30,9 @@ public class Member {
     private UserDisease userDisease;
 
     private String phoneNum;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     private String height;
 

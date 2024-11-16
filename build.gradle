@@ -46,6 +46,9 @@ dependencies {
 
 	//쿼리 파라미터 로그 남기기
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
+
+	//Google Vision API
+	implementation 'com.google.cloud:google-cloud-vision:3.34.0'
 }
 
 dependencyManagement {
