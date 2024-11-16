@@ -11,24 +11,23 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 public class DrugController {
 
-//    @Autowired
-//    private DrugQueryService drugQueryService;
-//
-//    // 파일 업로드 페이지
-//    @GetMapping("/upload")
-//    public String upload() {
-//        return "upload";
-//    }
-//
-//    // csv 파일 업로드 처리
-//    @PostMapping("/upload")
-//    public String uploadFile(MultipartFile file, Model model) {
-//        try {
-//            String result = drugQueryService.saveDrugsFromCsv(file);
-//            model.addAttribute("message", result);
-//        } catch (Exception e) {
-//            model.addAttribute("error", "파일 업로드 중 오류 발생: " + e.getMessage());
-//        }
-//        return "upload";
-//    }
+    @Autowired
+    private DrugQueryService drugQueryService;
+
+    // 업로드 페이지
+    @GetMapping("/uploadFile")
+    public String showUploadPage() {
+        return "uploadFile";
+    }
+
+    @PostMapping("/processFile")
+    public String processFile(MultipartFile file, Model model) {
+        try {
+            int processedRecords = drugQueryService.processCSV(file);
+            model.addAttribute("message", "파일 처리 완료: 총 " + processedRecords + "개의 기록이 처리되었습니다.");
+        } catch (Exception e) {
+            model.addAttribute("error", "파일 처리 중 오류 발생: " + e.getMessage());
+        }
+        return "uploadFile";
+    }
 }

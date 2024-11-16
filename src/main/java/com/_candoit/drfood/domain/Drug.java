@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter @Setter
 public class Drug {
 
-    @Id @GeneratedValue
+    @Id
     @Column(name = "drug_code")
     private Long drugCode;
 
