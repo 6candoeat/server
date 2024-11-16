@@ -53,4 +53,15 @@ public class MemberService {
 
         return member;
     }
+
+    public Member getMemberInfo(String loginId, String password) {
+        Member member = memberRepository.findByLoginIdAndPassword(loginId, password)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        if (!member.getPassword().equals(password)) {
+            throw new IllegalArgumentException("해당 정보 없음");
+        }
+
+        return member;
+    }
 }
