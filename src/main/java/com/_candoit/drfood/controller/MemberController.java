@@ -30,4 +30,15 @@ public class MemberController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
+
+    @GetMapping("/login-info")
+    public ResponseEntity<?> getLoginInfo(@RequestParam String loginId, @RequestParam String password) {
+        try {
+            Member member = memberService.getMemberInfo(loginId, password);
+            return new ResponseEntity<>(member, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
 }
