@@ -24,7 +24,7 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity<?> loginMember(@RequestBody LoginRequest loginRequest) {
         try {
-            Member member = memberService.login(loginRequest.getId(), loginRequest.getPassword());
+            Member member = memberService.login(loginRequest.getLoginId(), loginRequest.getPassword());
             return new ResponseEntity<>(member, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);

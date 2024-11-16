@@ -43,8 +43,8 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public Member login(String id, String password) {
-        Member member = memberRepository.findById(id)
+    public Member login(String loginId, String password) {
+        Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         if (!member.getPassword().equals(password)) {
