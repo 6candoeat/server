@@ -19,7 +19,7 @@ public class DrugQueryService {
         Map<String, Integer> diseaseCount = new HashMap<>();
 
         for (String drugName : drugNames) {
-            Drug drug = drugRepository.findByDrugName(drugName);
+            Drug drug = drugRepository.findFirstByDrugNameContaining(drugName);
 
             if (drug != null) {
                 String diseaseCategory = drug.getDiseaseCategory();

@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class GoogleVisionOCR {
@@ -72,13 +74,36 @@ public class GoogleVisionOCR {
             }
 
             System.out.println(uniqueLines);
+
+            // 약품명 전처리
+            Set<String> preprocessedLines = preprocessDrugNames(uniqueLines);
+
+            System.out.println("preprocessedLines = " + preprocessedLines);
+
             // 약품명으로 가장 빈도 높은 질병 카테고리를 조회
-            String mostFrequentDisease = drugQueryService.getDiseaseCategory(uniqueLines);
+            String mostFrequentDisease = drugQueryService.getDiseaseCategory(preprocessedLines);
 
 
             totalTime.stop();
             System.out.println("총 시간 : " + totalTime.getTotalTimeMillis() + "ms");
             return mostFrequentDisease;
         }
+    }
+
+    private Set<String> preprocessDrugNames(Set<String> drugNames) {
+        Set<String> processedNames = new HashSet<>();
+        Pattern pattern = Pattern.compile(".*(정|캡슐|액|주|원|환)");
+
+        for (String drugName : drugNames) {
+            Matcher matcher = pattern.matcher(drugName);
+
+            if (matcher.find()) {
+                processedNames.add(matcher.group()); // "정", "캡슐", "액", "주", "원", "환"으로 끝나는 부분만 추가
+            } else {
+                processedNames.add(drugName.trim()); // 매칭되지 않으면 원본 추가
+            }
+        }
+
+        return processedNames;
     }
 }
