@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DrugRepository extends JpaRepository<Drug, Long> {
     // 약품명으로 질병 조회
-    Drug findByDrugName(String drugName);
+    Drug findFirstByDrugNameContaining(String drugName);
 }

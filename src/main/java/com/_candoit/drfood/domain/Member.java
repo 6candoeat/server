@@ -13,18 +13,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "member")
 @Getter @Setter
 public class Member {
 
-    @Id @GeneratedValue
-    @Column(name = "user_id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userId")
     private Long userId;
 
     private String id;
 
     private String password;
 
-    private String name;
+    private String username;
 
     @Enumerated(EnumType.STRING)
     private UserDisease userDisease;
@@ -34,6 +36,8 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    private int age;
+
     private String height;
 
     private String weight;
@@ -41,7 +45,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private ExerciseStatus exerciseStatus;
 
-    private String address;
+    private String userAddress;
 
     @Enumerated(EnumType.STRING)
     private DietControl dietControl;
