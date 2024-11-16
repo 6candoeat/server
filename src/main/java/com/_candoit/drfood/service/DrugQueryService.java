@@ -4,8 +4,12 @@ import com._candoit.drfood.domain.Drug;
 import com._candoit.drfood.repository.DrugRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,4 +44,13 @@ public class DrugQueryService {
                 .map(Map.Entry::getKey)
                 .orElse("Unknown Disease Category");
     }
+
+//    public String saveDrugsFromCsv(MultipartFile file) throws Exception{
+//        if (file.isEmpty()) {
+//            throw new Exception("파일이 비어있습니다.");
+//        }
+//
+//        Reader reader = new InputStreamReader(file.getInputStream());
+//        Iterator<CSVRecord> records = CSVFOR
+//    }
 }
