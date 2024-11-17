@@ -1,6 +1,7 @@
 package com._candoit.drfood.controller;
 
 import com._candoit.drfood.domain.Member;
+import com._candoit.drfood.domain.enums.UserDisease;
 import com._candoit.drfood.req.LoginRequest;
 import com._candoit.drfood.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,16 @@ public class MemberController {
             return new ResponseEntity<>(member, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PostMapping("/saveDisease")
+    public ResponseEntity<?> saveDisease(@RequestParam Long userId, @RequestParam UserDisease disease) {
+        try {
+            memberService.updateDisease(userId, disease);
+            return new ResponseEntity<>("저장되었습니다!", HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
