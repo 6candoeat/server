@@ -17,9 +17,6 @@ public class Menu extends DateTimeEntity {
     @Column(name = "menu_id")
     private Long menuId;
 
-    @Enumerated(EnumType.STRING)
-    private Category category;
-
     private String menuName;
 
     private String menuImageUrl;
