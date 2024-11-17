@@ -17,10 +17,10 @@ public abstract class DateTimeEntity {
 
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(updatable = true)
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 }
 
