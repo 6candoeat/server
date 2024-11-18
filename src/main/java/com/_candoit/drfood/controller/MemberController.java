@@ -1,9 +1,11 @@
 package com._candoit.drfood.controller;
 
 import com._candoit.drfood.domain.Member;
+import com._candoit.drfood.domain.Risk;
 import com._candoit.drfood.enums.UserDisease;
 import com._candoit.drfood.req.LoginRequest;
 import com._candoit.drfood.service.MemberService;
+import com._candoit.drfood.service.RiskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,8 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    private final RiskService riskService;
+
     @PostMapping("/register")
     public ResponseEntity<?> registerMember(@RequestBody Member member) {
         memberService.calculateAndSaveMember(member);
@@ -27,6 +31,16 @@ public class MemberController {
         try {
             Member member = memberService.login(loginRequest.getLoginId(), loginRequest.getPassword());
             return new ResponseEntity<>(member, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PostMapping("/save-risk")
+    public ResponseEntity<?> saveRisk(@RequestParam Long userId) {
+        try {
+             riskService.create(userId);
+             return new ResponseEntity<>("Risk successfully saved!", HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
@@ -51,5 +65,6 @@ public class MemberController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
 
 }
