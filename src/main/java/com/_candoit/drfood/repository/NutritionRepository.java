@@ -1,4 +1,4 @@
-package com._candoit.drfood.menu.repository;
+package com._candoit.drfood.repository;
 
 import com._candoit.drfood.domain.Menu;
 import com._candoit.drfood.domain.Nutrition;

@@ -1,32 +1,42 @@
 package com._candoit.drfood.domain;
 
-import com._candoit.drfood.domain.enums.DietControl;
-import com._candoit.drfood.domain.enums.ExerciseStatus;
-import com._candoit.drfood.domain.enums.UserDisease;
+import com._candoit.drfood.enums.DietControl;
+import com._candoit.drfood.enums.ExerciseStatus;
+import com._candoit.drfood.enums.Gender;
+import com._candoit.drfood.enums.UserDisease;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@Getter @Setter
+@Table(name = "member")
+@Getter
+@Setter
 public class Member {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Long id;
+    private Long userId;
+
+    @Column(name = "login_id")
+    private String loginId;
 
     private String password;
 
-    private String name;
+    private String username;
 
     @Enumerated(EnumType.STRING)
     private UserDisease userDisease;
 
     private String phoneNum;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    private int age;
 
     private String height;
 
@@ -35,7 +45,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private ExerciseStatus exerciseStatus;
 
-    private String address;
+    private String userAddress;
 
     @Enumerated(EnumType.STRING)
     private DietControl dietControl;

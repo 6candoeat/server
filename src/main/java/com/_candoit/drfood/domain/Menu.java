@@ -1,6 +1,5 @@
 package com._candoit.drfood.domain;
 
-import com._candoit.drfood.domain.enums.Category;
 import com._candoit.drfood.global.DateTimeEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,15 +9,14 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "menu")
-@Getter @Setter
+@Getter
+@Setter
 public class Menu extends DateTimeEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "menu_id")
     private Long menuId;
-
-    @Enumerated(EnumType.STRING)
-    private Category category;
 
     private String menuName;
 
@@ -34,7 +32,7 @@ public class Menu extends DateTimeEntity {
         this.deletedAt = LocalDateTime.now();
     }
 
-    @ManyToOne(fetch =FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
 
