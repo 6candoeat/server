@@ -92,15 +92,20 @@ public class GoogleVisionOCR {
 
     private Set<String> preprocessDrugNames(Set<String> drugNames) {
         Set<String> processedNames = new HashSet<>();
-        Pattern pattern = Pattern.compile(".*(정|캡슐|액|주|원|환)");
+
+        // 패턴: "정", "캡슐", "액", "주", "원", "환"으로 끝나고 뒤에 "(, 숫자"가 나오는 경우 제거
+        Pattern pattern = Pattern.compile("(.*?(정|캡슐|액|주|원|환))");
 
         for (String drugName : drugNames) {
-            Matcher matcher = pattern.matcher(drugName);
+            // 앞의 불필요한 텍스트 제거 (예: "[숫자]" 형식)
+            String cleanedName = drugName.replaceAll("^\\[.*?\\]\\s*", "").trim();
+
+            // 패턴 매칭
+            Matcher matcher = pattern.matcher(cleanedName);
 
             if (matcher.find()) {
-                processedNames.add(matcher.group()); // "정", "캡슐", "액", "주", "원", "환"으로 끝나는 부분만 추가
-            } else {
-                processedNames.add(drugName.trim()); // 매칭되지 않으면 원본 추가
+                // 매칭된 부분만 추가 (불필요한 뒤쪽 제거)
+                processedNames.add(matcher.group(1).trim());
             }
         }
 
