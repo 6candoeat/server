@@ -24,7 +24,7 @@ public class DrugQueryService {
     public String getDiseaseCategory(Set<String> drugNames) {
         Map<String, Integer> diseaseCount = new HashMap<>();
 
-        // 약품명으로 질병 카테고리 카운트
+        // 각 약품명으로 질병 카테고리 조회 및 카운트
         for (String drugName : drugNames) {
             Drug drug = drugRepository.findFirstByDrugNameContaining(drugName);
 
@@ -40,23 +40,19 @@ public class DrugQueryService {
             }
         }
 
-        // 최대 카운트 값 찾기
-        int maxCount = diseaseCount.values()
-                .stream()
-                .max(Integer::compareTo)
-                .orElse(0);
+        // 가장 많이 사용된 질병 카테고리 찾기
+        int maxCount = diseaseCount.values().stream().max(Integer::compareTo).orElse(0);
 
-        // 최대 카운트에 해당하는 질병 리스트 추출
-        List<String> mostFrequentDiseases = diseaseCount.entrySet()
+        // 최대 카운트를 가진 질병들 찾기
+        List<String> topDiseases = diseaseCount.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue() == maxCount)
                 .map(Map.Entry::getKey)
+                .sorted() // 알파벳 순서로 정렬 (선택사항)
                 .toList();
 
-        // 결과 조합 (여러 값이 있으면 ,로 연결)
-        return mostFrequentDiseases.isEmpty()
-                ? "Unknown Disease Category"
-                : String.join(", ", mostFrequentDiseases);
+        // 질병을 ", "로 연결해서 반환
+        return String.join(", ", topDiseases);
     }
 
     public int processCSV(MultipartFile file) throws Exception {
