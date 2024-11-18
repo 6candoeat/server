@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
     List<Ingredient> findByMenu(Menu menu);
+    Ingredient findByName(String name);
 }
