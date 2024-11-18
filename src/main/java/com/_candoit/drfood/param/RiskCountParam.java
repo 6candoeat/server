@@ -1,6 +1,5 @@
 package com._candoit.drfood.param;
 
-import com._candoit.drfood.enums.RiskLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
