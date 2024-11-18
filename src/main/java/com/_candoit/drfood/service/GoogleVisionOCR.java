@@ -92,23 +92,28 @@ public class GoogleVisionOCR {
 
     private Set<String> preprocessDrugNames(Set<String> drugNames) {
         Set<String> processedNames = new HashSet<>();
-
-        // 패턴: "정", "캡슐", "액", "주", "원", "환"으로 끝나고 뒤에 "(, 숫자"가 나오는 경우 제거
-        Pattern pattern = Pattern.compile("(.*?(정|캡슐|액|주|원|환))");
+        Pattern pattern = Pattern.compile(".*?(정|캡슐|액|주|원|환)"); // "정", "캡슐", "액", "주", "원", "환"으로 끝나는 부분 추출
 
         for (String drugName : drugNames) {
-            // 앞의 불필요한 텍스트 제거 (예: "[숫자]" 형식)
-            String cleanedName = drugName.replaceAll("^\\[.*?\\]\\s*", "").trim();
+            // 숫자 + 공백 제거하고 약품명만 남기기
+            String cleanedName = drugName.replaceAll("^\\d+\\s*", "").trim();
 
-            // 패턴 매칭
             Matcher matcher = pattern.matcher(cleanedName);
 
             if (matcher.find()) {
-                // 매칭된 부분만 추가 (불필요한 뒤쪽 제거)
-                processedNames.add(matcher.group(1).trim());
+                String processedName = matcher.group(); // "정", "캡슐", "액", "주", "원", "환"으로 끝나는 부분만 추출
+                if (!isInvalidDrugName(processedName)) { // 유효하지 않은 약품명 필터링
+                    processedNames.add(processedName);
+                }
             }
         }
 
         return processedNames;
+    }
+
+    private boolean isInvalidDrugName(String drugName) {
+        // 쓸모 없는 약품명을 필터링
+        Set<String> invalidNames = Set.of("1정", "1캡슐", "1액", "1주", "1원", "1환", "정", "캡슐", "액", "주", "원", "환");
+        return invalidNames.contains(drugName); // 불필요한 데이터 제외
     }
 }
