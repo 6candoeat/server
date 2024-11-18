@@ -10,6 +10,7 @@ public class DrfoodApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DrfoodApplication.class, args);
+		System.out.println("Google Credentials Path: " + System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
 	}
 
 }
