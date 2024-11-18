@@ -46,6 +46,10 @@ public class MenuService {
         return nutritionRepository.findByMenu(menu).orElseThrow(() -> new DrFoodLogicException(ReturnCode.NOT_FOUND_ENTITY));
     }
 
+    public List<Menu> getMenus() {
+        return menuRepository.findAll();
+    }
+
     public BigDecimal getPurineByIngredient(Menu menu) {
         List<Ingredient> ingredients = ingredientRepository.findByMenu(menu);
         BigDecimal totalPurineAmount = BigDecimal.ZERO;

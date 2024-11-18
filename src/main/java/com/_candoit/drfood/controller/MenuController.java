@@ -5,9 +5,10 @@ import com._candoit.drfood.global.response.ApiResponse;
 import com._candoit.drfood.domain.Menu;
 import com._candoit.drfood.global.response.DrFoodPage;
 import com._candoit.drfood.global.validator.PageLimitSizeValidator;
-import com._candoit.drfood.repository.MemberRepository;
+import com._candoit.drfood.param.MenuRecommendationParam;
 import com._candoit.drfood.service.DiseaseMenuRiskService;
 import com._candoit.drfood.service.MenuService;
+import com._candoit.drfood.service.RecommendationService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -29,7 +31,7 @@ public class MenuController {
 
     private final MenuService menuService;
 
-    private final MemberRepository memberRepository;
+    private final RecommendationService recommendationService;
 
     private final DiseaseMenuRiskService diseaseMenuRiskService;
 
@@ -58,6 +60,32 @@ public class MenuController {
         return ApiResponse.of(DrFoodPage.of(menuItems));
     }
 
+    @GetMapping("/recommendation/{memberId}")
+    public ApiResponse getRecommendStores(@PathVariable("memberId") Long memberId, MenuGetRequest request) {
+        PageLimitSizeValidator.validateSize(request.getPage(), request.getLimit(), 100);
+        Pageable pageable = PageRequest.of(request.getPage(), request.getLimit());
+
+        List<MenuRecommendationParam> recommendMenuList = new ArrayList<>();
+
+        //모든 메뉴 가져오기
+        List<Menu> menus = menuService.getMenus();
+
+        //메뉴별 위험도 계산해서 안전, 보통만 추천
+        for (Menu menu : menus) {
+            RiskLevel riskLevel = diseaseMenuRiskService.getRiskLevel(memberId, menu);
+            if (!riskLevel.equals(RiskLevel.HIGH_RISK)) {
+                recommendMenuList.add(MenuRecommendationParam.builder().menu(menu).riskLevel(riskLevel).build());
+            }
+        }
+
+        List<MenuItem> collect = recommendationService.recommendMenu(memberId, recommendMenuList).stream().map(param -> MenuItem.of(param.getMenu(), param.getRiskLevel()))
+                .collect(Collectors.toList());
+
+        Page<MenuItem> menuItems = new PageImpl<>(collect, pageable, collect.size());
+
+        return ApiResponse.of(DrFoodPage.of(menuItems));
+    }
+
     @Data
     private static class MenuGetRequest {
 
@@ -67,6 +95,7 @@ public class MenuController {
 
     @Data
     private static class MenuItem {
+        private Long menuId;
 
         private String menuName;
 
@@ -80,6 +109,7 @@ public class MenuController {
 
         private static MenuItem of(Menu menu, RiskLevel riskLevel) {
             MenuItem converted = new MenuItem();
+            converted.setMenuId(menu.getMenuId());
             converted.setMenuName(menu.getMenuName());
             converted.setDescription(menu.getDescription());
             converted.setPrice(menu.getPrice());
