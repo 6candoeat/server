@@ -92,17 +92,31 @@ public class GoogleVisionOCR {
 
     private Set<String> preprocessDrugNames(Set<String> drugNames) {
         Set<String> processedNames = new HashSet<>();
-        Pattern pattern = Pattern.compile(".*?(정|캡슐|액|주|원|환)"); // "정", "캡슐", "액", "주", "원", "환"으로 끝나는 부분 추출
+        Pattern validPattern = Pattern.compile("^(.*?)(정|캡슐|액|주|원|환)"); // 유효한 약품명 패턴
+        Pattern trailingPattern = Pattern.compile("(.*?)(\\s*[0-9]+.*)"); // 숫자와 단위 제거 패턴
 
         for (String drugName : drugNames) {
-            // 숫자 + 공백 제거하고 약품명만 남기기
-            String cleanedName = drugName.replaceAll("^\\d+\\s*", "").trim();
+            // 앞뒤 공백 제거
+            String cleanedName = drugName.trim();
 
-            Matcher matcher = pattern.matcher(cleanedName);
+            // 금액 형식이나 특정 키워드 제거
+            if (isInvalidDrugName(cleanedName)) {
+                continue;
+            }
 
-            if (matcher.find()) {
-                String processedName = matcher.group(); // "정", "캡슐", "액", "주", "원", "환"으로 끝나는 부분만 추출
-                if (!isInvalidDrugName(processedName)) { // 유효하지 않은 약품명 필터링
+            // 숫자 및 단위 제거
+            Matcher trailingMatcher = trailingPattern.matcher(cleanedName);
+            if (trailingMatcher.matches()) {
+                cleanedName = trailingMatcher.group(1).trim();
+            }
+
+            // 유효한 약품명 패턴 추출
+            Matcher validMatcher = validPattern.matcher(cleanedName);
+            if (validMatcher.find()) {
+                String processedName = validMatcher.group(1).trim() + validMatcher.group(2).trim();
+
+                // 불완전 약품명 제거
+                if (!isIncompleteDrugName(processedName)) {
                     processedNames.add(processedName);
                 }
             }
@@ -112,8 +126,25 @@ public class GoogleVisionOCR {
     }
 
     private boolean isInvalidDrugName(String drugName) {
-        // 쓸모 없는 약품명을 필터링
-        Set<String> invalidNames = Set.of("1정", "1캡슐", "1액", "1주", "1원", "1환", "정", "캡슐", "액", "주", "원", "환");
-        return invalidNames.contains(drugName); // 불필요한 데이터 제외
+        // 금액 형식 또는 특정 제외 키워드
+        if (drugName.matches(".*\\d{1,3}(,\\d{3})*\\s*원.*")) {
+            return true; // 금액 형식 제외
+        }
+
+        // 제외할 키워드 목록
+        Set<String> invalidKeywords = Set.of("약제비 총액", "합계", "총계", "원");
+        for (String keyword : invalidKeywords) {
+            if (drugName.contains(keyword)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isIncompleteDrugName(String drugName) {
+        // 불완전한 약품명 목록
+        Set<String> incompleteNames = Set.of("정", "서방정", "캡슐", "액", "주", "원", "환");
+        return incompleteNames.contains(drugName); // 단독으로 남는 불완전 약품명은 제거
     }
 }
