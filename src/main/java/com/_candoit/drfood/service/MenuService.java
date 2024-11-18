@@ -46,6 +46,11 @@ public class MenuService {
         return nutritionRepository.findByMenu(menu).orElseThrow(() -> new DrFoodLogicException(ReturnCode.NOT_FOUND_ENTITY));
     }
 
+    public List<Ingredient> getIngredient(Menu menu) {
+        List<Ingredient> ingredients = ingredientRepository.findByMenu(menu);
+        return ingredients;
+    }
+
     public List<Menu> getMenus() {
         return menuRepository.findAll();
     }

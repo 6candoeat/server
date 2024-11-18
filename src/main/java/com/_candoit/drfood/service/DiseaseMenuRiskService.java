@@ -39,9 +39,9 @@ public class DiseaseMenuRiskService {
 
         BigDecimal divisor = new BigDecimal("3");
         BigDecimal dailyEnergyPerMeal = member.getDailyEnergy().divide(divisor, 2, RoundingMode.HALF_UP);
-        for (Menu menu : menus) {
-            //퓨린 이외에는 영양성분으로 판단
-            if (member.getUserDisease().equals(UserDisease.GOUT)) {
+
+        if (member.getUserDisease().equals(UserDisease.GOUT)) {
+            for (Menu menu : menus) {
                 BigDecimal totalPurineAmount = menuService.getPurineByIngredient(menu);
                 RiskLevel riskLevel = RiskLevelValidator.validateGout(totalPurineAmount);
                 if (riskLevel.equals(RiskLevel.SAFE)) {
@@ -52,7 +52,9 @@ public class DiseaseMenuRiskService {
                     highRisk++;
                 }
             }
-            if (member.getUserDisease().equals(UserDisease.HYPERTENSION)) {
+        }
+        if (member.getUserDisease().equals(UserDisease.HYPERTENSION)) {
+            for (Menu menu : menus) {
                 Nutrition nutrition = nutritionRepository.findByMenu(menu).orElseThrow(() -> new DrFoodLogicException(ReturnCode.NOT_FOUND_ENTITY));
                 RiskLevel riskLevel = RiskLevelValidator.validateHyperTension(nutrition, dailyEnergyPerMeal);
                 if (riskLevel.equals(RiskLevel.SAFE)) {
@@ -63,7 +65,9 @@ public class DiseaseMenuRiskService {
                     highRisk++;
                 }
             }
-            if (member.getUserDisease().equals(UserDisease.DIABETES)) {
+        }
+        if (member.getUserDisease().equals(UserDisease.DIABETES)) {
+            for (Menu menu : menus) {
                 Nutrition nutrition = nutritionRepository.findByMenu(menu).orElseThrow(() -> new DrFoodLogicException(ReturnCode.NOT_FOUND_ENTITY));
                 RiskLevel riskLevel = RiskLevelValidator.validateDiabetes(nutrition, dailyEnergyPerMeal);
                 if (riskLevel.equals(RiskLevel.SAFE)) {

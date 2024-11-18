@@ -28,12 +28,9 @@ public class RecommendationService {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new DrFoodLogicException(ReturnCode.NOT_FOUND_ENTITY));
 
         List<MenuRecommendationParam> recommendScoreList = new ArrayList<>();
-//        long totalCount = orderRepository.count();
-//        long memberTotalCount = orderRepository.countByMember(member);
-//        long sameDiseaseTotalCount = orderRepository.countTotalOrdersByDisease(member.getUserDisease(), LocalDateTime.now().minusMonths(6));
-        long totalCount = 10000000;
-        long memberTotalCount = 5000000;
-        long sameDiseaseTotalCount = 7000000;
+        long totalCount = orderRepository.count();
+        long memberTotalCount = orderRepository.countByMember(member);
+        long sameDiseaseTotalCount = orderRepository.countTotalOrdersByDisease(member.getUserDisease(), LocalDateTime.now().minusMonths(6));
         for (MenuRecommendationParam param : recommendMenuList) {
             long menuCount = orderRepository.countByMenu(param.getMenu());
             long memberMenuCount = orderRepository.countOrdersByMemberAndMenu(member, param.getMenu());
