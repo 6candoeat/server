@@ -1,7 +1,7 @@
 package com._candoit.drfood.controller;
 
 import com._candoit.drfood.domain.Member;
-import com._candoit.drfood.domain.enums.UserDisease;
+import com._candoit.drfood.enums.UserDisease;
 import com._candoit.drfood.req.LoginRequest;
 import com._candoit.drfood.service.MemberService;
 import lombok.RequiredArgsConstructor;
