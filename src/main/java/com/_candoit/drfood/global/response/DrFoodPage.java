@@ -1,9 +1,11 @@
 package com._candoit.drfood.global.response;
 
+import lombok.Getter;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
+@Getter
 public class DrFoodPage<T> {
 
     private List<T> contents;

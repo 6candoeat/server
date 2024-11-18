@@ -3,27 +3,23 @@ package com._candoit.drfood.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
-public class Ingredient {
+public class OrderCount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ingredientId;
+    private Long OrderCountId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
+    @ManyToOne
     private Menu menu;
 
-    private String name;
+    private int diabetesCount;
 
-    private int gram;
+    private int goutCount;
 
-    private BigDecimal purine;
-
+    private int hyperExtensionCount;
 }

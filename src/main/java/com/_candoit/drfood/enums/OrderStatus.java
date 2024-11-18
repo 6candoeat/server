@@ -1,4 +1,4 @@
-package com._candoit.drfood.domain.enums;
+package com._candoit.drfood.enums;
 
 public enum OrderStatus {
     READY, COMP

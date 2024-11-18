@@ -24,6 +24,7 @@ public class DrugQueryService {
     public String getDiseaseCategory(Set<String> drugNames) {
         Map<String, Integer> diseaseCount = new HashMap<>();
 
+        // 각 약품명으로 질병 카테고리 조회 및 카운트
         for (String drugName : drugNames) {
             Drug drug = drugRepository.findFirstByDrugNameContaining(drugName);
 
@@ -39,16 +40,23 @@ public class DrugQueryService {
             }
         }
 
-        // 가장 많이 사용된 질병 카테고리 return
-        return diseaseCount.entrySet()
+        // 가장 많이 사용된 질병 카테고리 찾기
+        int maxCount = diseaseCount.values().stream().max(Integer::compareTo).orElse(0);
+
+        // 최대 카운트를 가진 질병들 찾기
+        List<String> topDiseases = diseaseCount.entrySet()
                 .stream()
-                .max(Map.Entry.comparingByValue())
+                .filter(entry -> entry.getValue() == maxCount)
                 .map(Map.Entry::getKey)
-                .orElse("Unknown Disease Category");
+                .sorted() // 알파벳 순서로 정렬 (선택사항)
+                .toList();
+
+        // 질병을 ", "로 연결해서 반환
+        return String.join(", ", topDiseases);
     }
 
     public int processCSV(MultipartFile file) throws Exception {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), "CP949"));
         CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader());
         int processedCount = 0;
 

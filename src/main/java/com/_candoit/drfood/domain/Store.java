@@ -1,6 +1,6 @@
 package com._candoit.drfood.domain;
 
-import com._candoit.drfood.domain.enums.Category;
+import com._candoit.drfood.enums.Category;
 import com._candoit.drfood.global.DateTimeEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,10 +10,12 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "store")
-@Getter @Setter
+@Getter
+@Setter
 public class Store extends DateTimeEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "store_id")
     private Long id;
 

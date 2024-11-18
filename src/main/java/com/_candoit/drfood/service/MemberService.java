@@ -1,11 +1,10 @@
 package com._candoit.drfood.service;
 
 import com._candoit.drfood.domain.Member;
-import com._candoit.drfood.domain.enums.Gender;
-import com._candoit.drfood.domain.enums.UserDisease;
+import com._candoit.drfood.enums.Gender;
+import com._candoit.drfood.enums.UserDisease;
 import com._candoit.drfood.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
