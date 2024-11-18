@@ -1,6 +1,5 @@
 package com._candoit.drfood.domain;
 
-import com._candoit.drfood.global.DateTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +10,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
-public class Nutrition extends DateTimeEntity {
+public class Nutrition {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +34,7 @@ public class Nutrition extends DateTimeEntity {
 
     private BigDecimal protein;
 
-    private BigDecimal fiber;
+    private BigDecimal dietaryFiber;
 
     private BigDecimal sugar;
 }

@@ -11,10 +11,6 @@ spring:
         show_sql: true
         format_sql: true
 
-  batch:
-    jdbc:
-      initialize-schema: always
-
   profiles:
     include: secret
 

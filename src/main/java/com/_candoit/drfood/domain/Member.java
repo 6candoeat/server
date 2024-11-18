@@ -1,20 +1,19 @@
 package com._candoit.drfood.domain;
 
-import com._candoit.drfood.domain.enums.DietControl;
-import com._candoit.drfood.domain.enums.ExerciseStatus;
-import com._candoit.drfood.domain.enums.Gender;
-import com._candoit.drfood.domain.enums.UserDisease;
+import com._candoit.drfood.enums.DietControl;
+import com._candoit.drfood.enums.ExerciseStatus;
+import com._candoit.drfood.enums.Gender;
+import com._candoit.drfood.enums.UserDisease;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "member")
-@Getter @Setter
+@Getter
+@Setter
 public class Member {
 
     @Id
