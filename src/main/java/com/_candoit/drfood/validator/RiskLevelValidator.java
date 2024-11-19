@@ -18,7 +18,18 @@ public class RiskLevelValidator {
         return RiskLevel.HIGH_RISK;
     }
 
-    public static RiskLevel validateHyperTension(Nutrition nutrition, BigDecimal dailyEnergyPerMeal) {
+    public static RiskLevel validateStrictGout(BigDecimal totalPurineAmount) {
+        if (totalPurineAmount.compareTo(PurineRiskConst.STRICT_PURINE_SAFE) < 0) {
+            return RiskLevel.SAFE;
+        }
+
+        if (totalPurineAmount.compareTo(PurineRiskConst.STRICT_PURINE_SAFE) >= 0 && totalPurineAmount.compareTo(PurineRiskConst.STRICT_PURINE_MODERATE) < 0) {
+            return RiskLevel.MODERATE;
+        }
+        return RiskLevel.HIGH_RISK;
+    }
+
+    public static RiskLevel validateDiabetes(Nutrition nutrition, BigDecimal dailyEnergyPerMeal) {
         BigDecimal carbohydrates = nutrition.getCarbohydrates();
         BigDecimal protein = nutrition.getProtein();
         BigDecimal fat = nutrition.getFat();
@@ -49,7 +60,38 @@ public class RiskLevelValidator {
         return RiskLevel.HIGH_RISK;
     }
 
-    public static RiskLevel validateDiabetes(Nutrition nutrition, BigDecimal dailyEnergyPerMeal) {
+    public static RiskLevel validateStrictDiabetes(Nutrition nutrition, BigDecimal dailyEnergyPerMeal) {
+        BigDecimal carbohydrates = nutrition.getCarbohydrates();
+        BigDecimal protein = nutrition.getProtein();
+        BigDecimal fat = nutrition.getFat();
+        BigDecimal saturatedFat = nutrition.getSaturatedFat();
+        BigDecimal transFat = nutrition.getTransFat();
+        BigDecimal sodium = nutrition.getSodium();
+        BigDecimal sugar = nutrition.getSugar();
+
+        if (carbohydrates.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.55"))) < 0 &&
+                protein.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.18"))) < 0 &&
+                fat.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.18"))) < 0 &&
+                saturatedFat.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.06"))) < 0 &&
+                transFat.compareTo(new BigDecimal("0.60")) < 0 &&
+                sodium.compareTo(new BigDecimal("700")) < 0 &&
+                sugar.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.07"))) < 0) {
+            return RiskLevel.SAFE; // 안전
+        }
+
+        if (carbohydrates.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.60"))) < 0 &&
+                protein.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.20"))) < 0 &&
+                fat.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.22"))) < 0 &&
+                saturatedFat.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.08"))) < 0 &&
+                transFat.compareTo(new BigDecimal("0.66")) < 0 &&
+                sodium.compareTo(new BigDecimal("800")) < 0 &&
+                sugar.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.09"))) < 0) {
+            return RiskLevel.SAFE; // 안전
+        }
+        return RiskLevel.HIGH_RISK;
+    }
+
+    public static RiskLevel validateHyperTension(Nutrition nutrition, BigDecimal dailyEnergyPerMeal) {
         BigDecimal fat = nutrition.getFat();
         BigDecimal saturatedFat = nutrition.getSaturatedFat();
         BigDecimal transFat = nutrition.getTransFat();
@@ -66,6 +108,30 @@ public class RiskLevelValidator {
                 fat.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.25"))) < 0 &&
                 saturatedFat.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.1"))) < 0 &&
                 transFat.compareTo(new BigDecimal("0.7")) < 0) {
+            return RiskLevel.MODERATE; // 보통
+        }
+
+        return RiskLevel.HIGH_RISK;
+    }
+
+
+    public static RiskLevel validateStrictHyperTension(Nutrition nutrition, BigDecimal dailyEnergyPerMeal) {
+        BigDecimal fat = nutrition.getFat();
+        BigDecimal saturatedFat = nutrition.getSaturatedFat();
+        BigDecimal transFat = nutrition.getTransFat();
+        BigDecimal sodium = nutrition.getSodium();
+
+        if (sodium.compareTo(new BigDecimal("700")) < 0 &&
+                fat.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.18"))) < 0 &&
+                saturatedFat.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.06"))) < 0 &&
+                transFat.compareTo(new BigDecimal("0.60")) < 0) {
+            return RiskLevel.SAFE; // 안전
+        }
+
+        if (sodium.compareTo(new BigDecimal("800")) < 0 &&
+                fat.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.22"))) < 0 &&
+                saturatedFat.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.08"))) < 0 &&
+                transFat.compareTo(new BigDecimal("0.66")) < 0) {
             return RiskLevel.MODERATE; // 보통
         }
 
