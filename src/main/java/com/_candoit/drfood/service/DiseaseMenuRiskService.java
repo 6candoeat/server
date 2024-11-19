@@ -3,6 +3,7 @@ package com._candoit.drfood.service;
 import com._candoit.drfood.domain.Member;
 import com._candoit.drfood.domain.Menu;
 import com._candoit.drfood.domain.Nutrition;
+import com._candoit.drfood.enums.DietControl;
 import com._candoit.drfood.enums.RiskLevel;
 import com._candoit.drfood.enums.UserDisease;
 import com._candoit.drfood.global.enums.ReturnCode;
@@ -53,10 +54,36 @@ public class DiseaseMenuRiskService {
                 }
             }
         }
+        if (member.getDietControl().equals(DietControl.STRICT) && member.getUserDisease().equals(UserDisease.GOUT)) {
+            for (Menu menu : menus) {
+                BigDecimal totalPurineAmount = menuService.getPurineByIngredient(menu);
+                RiskLevel riskLevel = RiskLevelValidator.validateStrictGout(totalPurineAmount);
+                if (riskLevel.equals(RiskLevel.SAFE)) {
+                    safe++;
+                } else if (riskLevel.equals(RiskLevel.MODERATE)) {
+                    moderate++;
+                } else {
+                    highRisk++;
+                }
+            }
+        }
         if (member.getUserDisease().equals(UserDisease.HYPERTENSION)) {
             for (Menu menu : menus) {
                 Nutrition nutrition = nutritionRepository.findByMenu(menu).orElseThrow(() -> new DrFoodLogicException(ReturnCode.NOT_FOUND_ENTITY));
                 RiskLevel riskLevel = RiskLevelValidator.validateHyperTension(nutrition, dailyEnergyPerMeal);
+                if (riskLevel.equals(RiskLevel.SAFE)) {
+                    safe++;
+                } else if (riskLevel.equals(RiskLevel.MODERATE)) {
+                    moderate++;
+                } else {
+                    highRisk++;
+                }
+            }
+        }
+        if (member.getDietControl().equals(DietControl.STRICT) && member.getUserDisease().equals(UserDisease.HYPERTENSION)) {
+            for (Menu menu : menus) {
+                Nutrition nutrition = nutritionRepository.findByMenu(menu).orElseThrow(() -> new DrFoodLogicException(ReturnCode.NOT_FOUND_ENTITY));
+                RiskLevel riskLevel = RiskLevelValidator.validateStrictHyperTension(nutrition, dailyEnergyPerMeal);
                 if (riskLevel.equals(RiskLevel.SAFE)) {
                     safe++;
                 } else if (riskLevel.equals(RiskLevel.MODERATE)) {
@@ -79,6 +106,19 @@ public class DiseaseMenuRiskService {
                 }
             }
         }
+        if (member.getDietControl().equals(DietControl.STRICT) && member.getUserDisease().equals(UserDisease.DIABETES)) {
+            for (Menu menu : menus) {
+                Nutrition nutrition = nutritionRepository.findByMenu(menu).orElseThrow(() -> new DrFoodLogicException(ReturnCode.NOT_FOUND_ENTITY));
+                RiskLevel riskLevel = RiskLevelValidator.validateStrictDiabetes(nutrition, dailyEnergyPerMeal);
+                if (riskLevel.equals(RiskLevel.SAFE)) {
+                    safe++;
+                } else if (riskLevel.equals(RiskLevel.MODERATE)) {
+                    moderate++;
+                } else {
+                    highRisk++;
+                }
+            }
+        }
 
         return RiskCountParam.builder().safeCount(safe)
                 .moderateCount(moderate)
@@ -87,19 +127,34 @@ public class DiseaseMenuRiskService {
 
     public RiskLevel getRiskLevel(Long memberId, Menu menu) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new DrFoodLogicException(ReturnCode.NOT_FOUND_ENTITY));
-
-        BigDecimal divisor = new BigDecimal("3");
-        BigDecimal dailyEnergyPerMeal = member.getDailyEnergy().divide(divisor, 2, RoundingMode.HALF_UP);
-
+        DietControl dietControl = member.getDietControl();
         //퓨린 이외에는 영양성분으로 판단
+        if (dietControl.equals(DietControl.STRICT) && member.getUserDisease().equals(UserDisease.GOUT)) {
+            BigDecimal totalPurineAmount = menuService.getPurineByIngredient(menu);
+            return RiskLevelValidator.validateStrictGout(totalPurineAmount);
+        }
         if (member.getUserDisease().equals(UserDisease.GOUT)) {
             BigDecimal totalPurineAmount = menuService.getPurineByIngredient(menu);
             return RiskLevelValidator.validateGout(totalPurineAmount);
         }
+        BigDecimal divisor = new BigDecimal("3");
+        BigDecimal dailyEnergyPerMeal = member.getDailyEnergy().divide(divisor, 2, RoundingMode.HALF_UP);
+
+        if (dietControl.equals(DietControl.STRICT) && member.getUserDisease().equals(UserDisease.HYPERTENSION)) {
+            Nutrition nutrition = nutritionRepository.findByMenu(menu).orElseThrow(() -> new DrFoodLogicException(ReturnCode.NOT_FOUND_ENTITY));
+            return RiskLevelValidator.validateStrictHyperTension(nutrition, dailyEnergyPerMeal);
+        }
+
         if (member.getUserDisease().equals(UserDisease.HYPERTENSION)) {
             Nutrition nutrition = nutritionRepository.findByMenu(menu).orElseThrow(() -> new DrFoodLogicException(ReturnCode.NOT_FOUND_ENTITY));
             return RiskLevelValidator.validateHyperTension(nutrition, dailyEnergyPerMeal);
         }
+
+        if (dietControl.equals(DietControl.STRICT) && member.getUserDisease().equals(UserDisease.DIABETES)) {
+            Nutrition nutrition = nutritionRepository.findByMenu(menu).orElseThrow(() -> new DrFoodLogicException(ReturnCode.NOT_FOUND_ENTITY));
+            return RiskLevelValidator.validateStrictDiabetes(nutrition, dailyEnergyPerMeal);
+        }
+
         if (member.getUserDisease().equals(UserDisease.DIABETES)) {
             Nutrition nutrition = nutritionRepository.findByMenu(menu).orElseThrow(() -> new DrFoodLogicException(ReturnCode.NOT_FOUND_ENTITY));
             return RiskLevelValidator.validateDiabetes(nutrition, dailyEnergyPerMeal);

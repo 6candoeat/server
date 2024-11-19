@@ -1,6 +1,7 @@
 package com._candoit.drfood.controller;
 
 import com._candoit.drfood.domain.Nutrition;
+import com._candoit.drfood.domain.Risk;
 import com._candoit.drfood.enums.RiskLevel;
 import com._candoit.drfood.global.response.ApiResponse;
 import com._candoit.drfood.domain.Menu;
@@ -10,6 +11,7 @@ import com._candoit.drfood.param.MenuRecommendationParam;
 import com._candoit.drfood.service.DiseaseMenuRiskService;
 import com._candoit.drfood.service.MenuService;
 import com._candoit.drfood.service.RecommendationService;
+import com._candoit.drfood.service.RiskService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,6 +39,8 @@ public class MenuController {
 
     private final DiseaseMenuRiskService diseaseMenuRiskService;
 
+    private final RiskService riskService;
+
     @GetMapping("/menus/{menuId}/{memberId}")
     public ApiResponse getMenu(@PathVariable("menuId") Long menuId, @PathVariable("memberId") Long memberId) {
         Menu menu = menuService.getMenu(menuId);
@@ -52,11 +56,11 @@ public class MenuController {
 
         List<MenuItem> menuItemList = new ArrayList<>();
 
+        List<Risk> allByMemberIdAndStoreId = riskService.findAllByMemberIdAndStoreId(memberId, storeId);
         //가게 메뉴를 가져와서 메뉴마다 위험도 구해 return
         Page<Menu> menus = menuService.findMenusByStoreId(storeId, pageable);
-        for (Menu menu : menus.getContent()) {
-            RiskLevel riskLevels = diseaseMenuRiskService.getRiskLevel(memberId, menu);
-            menuItemList.add(MenuItem.of(menu, riskLevels));
+        for (Risk risk : allByMemberIdAndStoreId) {
+            menuItemList.add(MenuItem.of(risk.getMenu(), risk.getRiskLevel()));
         }
 
         Page<MenuItem> menuItems = new PageImpl<>(menuItemList, pageable, menuItemList.size());
@@ -71,14 +75,11 @@ public class MenuController {
         List<MenuRecommendationParam> recommendMenuList = new ArrayList<>();
 
         //모든 메뉴 가져오기
-        List<Menu> menus = menuService.getMenus();
+        List<Risk> menus = riskService.findAllExecuteHighRisk(memberId);
 
         //메뉴별 위험도 계산해서 안전, 보통만 추천
-        for (Menu menu : menus) {
-            RiskLevel riskLevel = diseaseMenuRiskService.getRiskLevel(memberId, menu);
-            if (!riskLevel.equals(RiskLevel.HIGH_RISK)) {
-                recommendMenuList.add(MenuRecommendationParam.builder().menu(menu).riskLevel(riskLevel).build());
-            }
+        for (Risk risk : menus) {
+            recommendMenuList.add(MenuRecommendationParam.builder().menu(risk.getMenu()).riskLevel(risk.getRiskLevel()).build());
         }
 
         List<MenuItem> collect = recommendationService.recommendMenu(memberId, recommendMenuList).stream().map(param -> MenuItem.of(param.getMenu(), param.getRiskLevel()))
@@ -93,7 +94,7 @@ public class MenuController {
     private static class MenuGetRequest {
 
         private int page = 0;
-        private int limit = 10;
+        private int limit = 30;
     }
 
     @Data
