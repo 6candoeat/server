@@ -64,6 +64,8 @@ public class StoreController {
     @Data
     private static class StoreItem {
 
+        private Long storeId;
+
         private String storeName;
 
         private String storePictureUrl;
@@ -76,6 +78,7 @@ public class StoreController {
 
         private static StoreItem of(Store store, RiskCountParam riskCountParam) {
             StoreItem converted = new StoreItem();
+            converted.storeId = store.getId();
             converted.storeName = store.getStoreName();
             converted.storePictureUrl = store.getStorePictureUrl();
             converted.safe = riskCountParam.getSafeCount();
