@@ -99,6 +99,8 @@ public class MenuController {
 
     @Data
     private static class MenuItem {
+        private Long storeId;
+
         private Long menuId;
 
         private String menuName;
@@ -131,32 +133,33 @@ public class MenuController {
 
         private static MenuItem of(Menu menu, RiskLevel riskLevel) {
             MenuItem converted = new MenuItem();
-            converted.setMenuId(menu.getMenuId());
-            converted.setMenuName(menu.getMenuName());
-            converted.setDescription(menu.getDescription());
-            converted.setPrice(menu.getPrice());
-            converted.setMenuImageUrl(menu.getMenuImageUrl());
-            converted.setRiskLevel(riskLevel);
+            converted.menuId = menu.getMenuId();
+            converted.menuName = menu.getMenuName();
+            converted.description = menu.getDescription();
+            converted.price = menu.getPrice();
+            converted.menuImageUrl = menu.getMenuImageUrl();
+            converted.riskLevel = riskLevel;
             return converted;
         }
 
         private static MenuItem of(Menu menu, RiskLevel riskLevel, Nutrition nutrition) {
             MenuItem converted = new MenuItem();
-            converted.setMenuId(menu.getMenuId());
-            converted.setMenuName(menu.getMenuName());
-            converted.setDescription(menu.getDescription());
-            converted.setPrice(menu.getPrice());
-            converted.setMenuImageUrl(menu.getMenuImageUrl());
-            converted.setRiskLevel(riskLevel);
-            converted.setCalories(nutrition.getCalories());
-            converted.setFat(nutrition.getFat());
-            converted.setSaturatedFat(nutrition.getSaturatedFat());
-            converted.setTransFat(nutrition.getTransFat());
-            converted.setSodium(nutrition.getSodium());
-            converted.setCarbohydrates(nutrition.getCarbohydrates());
-            converted.setProtein(nutrition.getProtein());
-            converted.setDietaryFiber(nutrition.getDietaryFiber());
-            converted.setSugar(nutrition.getSugar());
+            converted.menuId = menu.getMenuId();
+            converted.storeId = menu.getStore().getId();
+            converted.menuName = menu.getMenuName();
+            converted.description = menu.getDescription();
+            converted.price = menu.getPrice();
+            converted.menuImageUrl = menu.getMenuImageUrl();
+            converted.riskLevel = riskLevel;
+            converted.calories = nutrition.getCalories();
+            converted.fat = nutrition.getFat();
+            converted.saturatedFat = nutrition.getSaturatedFat();
+            converted.transFat = nutrition.getTransFat();
+            converted.sodium = nutrition.getSodium();
+            converted.carbohydrates = nutrition.getCarbohydrates();
+            converted.protein = nutrition.getProtein();
+            converted.dietaryFiber = nutrition.getDietaryFiber();
+            converted.sugar = nutrition.getSugar();
             return converted;
         }
     }
