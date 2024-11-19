@@ -1,6 +1,7 @@
 package com._candoit.drfood.controller;
 
 import com._candoit.drfood.domain.Menu;
+import com._candoit.drfood.domain.Risk;
 import com._candoit.drfood.domain.Store;
 import com._candoit.drfood.enums.Category;
 import com._candoit.drfood.global.response.ApiResponse;
@@ -9,6 +10,7 @@ import com._candoit.drfood.global.validator.PageLimitSizeValidator;
 import com._candoit.drfood.param.RiskCountParam;
 import com._candoit.drfood.service.DiseaseMenuRiskService;
 import com._candoit.drfood.service.MenuService;
+import com._candoit.drfood.service.RiskService;
 import com._candoit.drfood.service.StoreService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +34,11 @@ public class StoreController {
 
     private final DiseaseMenuRiskService diseaseMenuRiskService;
 
+    private final RiskService riskService;
+
 
     @GetMapping("/{memberId}")
-    public ApiResponse getStores(@RequestParam("category") Category category, @PathVariable("memberId") Long memberId, StoreGetRequest request) {
+    public ApiResponse getStores(@RequestParam("category") Category category, @PathVariable("memberId") Long memberId, StoreGetRequest request, MenuGetRequest menuGetRequest) {
         PageLimitSizeValidator.validateSize(request.getPage(), request.getLimit(), 100);
         Pageable pageable = PageRequest.of(request.getPage(), request.getLimit());
 
@@ -45,7 +49,7 @@ public class StoreController {
 
         //가게별 메뉴를 가져와서 메뉴마다 위험도 개수를 구해 return
         for (Store store : stores) {
-            Page<Menu> menus = menuService.findMenusByStore(store, pageable);
+            List<Menu> menus = menuService.findMenusByStore(store);
             RiskCountParam count = diseaseMenuRiskService.getRiskLevelCount(memberId, menus);
             storeList.add(StoreItem.of(store, count));
         }
@@ -58,7 +62,14 @@ public class StoreController {
     private static class StoreGetRequest {
 
         private int page = 0;
-        private int limit = 10;
+        private int limit = 30;
+    }
+
+    @Data
+    private static class MenuGetRequest {
+
+        private int page = 0;
+        private int limit = 50;
     }
 
     @Data
