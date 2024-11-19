@@ -27,13 +27,13 @@ public class MemberService {
 
         double dailyEnergy;
         switch (member.getExerciseStatus()) {
-            case NONE :
+            case NONE:
                 dailyEnergy = standardWeight * 27;
                 break;
-            case REGULAR :
+            case REGULAR:
                 dailyEnergy = standardWeight * 32;
                 break;
-            case FREQUENT :
+            case FREQUENT:
                 dailyEnergy = standardWeight * 37;
                 break;
             default:

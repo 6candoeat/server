@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -31,22 +30,25 @@ public class RecommendationService {
         long totalCount = orderRepository.count();
         long memberTotalCount = orderRepository.countByMember(member);
         long sameDiseaseTotalCount = orderRepository.countTotalOrdersByDisease(member.getUserDisease(), LocalDateTime.now().minusMonths(6));
+
         for (MenuRecommendationParam param : recommendMenuList) {
             long menuCount = orderRepository.countByMenu(param.getMenu());
             long memberMenuCount = orderRepository.countOrdersByMemberAndMenu(member, param.getMenu());
             long sameDiseaseMenuCount = orderRepository.countOrdersByDiseaseAndMenuInLastSixMonths(member.getUserDisease(), param.getMenu(), LocalDateTime.now().minusMonths(6));
-            long safeScore = 0;
+            long safeScore;
+
             if (param.getRiskLevel().equals(RiskLevel.SAFE)) {
                 safeScore = 40;
             } else {
                 safeScore = 28;
             }
+
             long finalScore = safeScore + (menuCount / totalCount) * 10 + (memberMenuCount / memberTotalCount) * 20 + (sameDiseaseMenuCount / sameDiseaseTotalCount) * 30;
+
             recommendScoreList.add(MenuRecommendationParam.builder().menu(param.getMenu()).riskLevel(param.getRiskLevel()).score(finalScore).build());
         }
 
-        Collections.sort(recommendScoreList,
-                Comparator.comparing(MenuRecommendationParam::getScore).reversed());
+        recommendScoreList.sort(Comparator.comparing(MenuRecommendationParam::getScore).reversed());
         return recommendScoreList.subList(0, Math.min(10, recommendScoreList.size()));
 
     }
