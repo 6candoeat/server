@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -46,21 +45,11 @@ public class MenuService {
         return nutritionRepository.findByMenu(menu).orElseThrow(() -> new DrFoodLogicException(ReturnCode.NOT_FOUND_ENTITY));
     }
 
-    public List<Ingredient> getIngredient(Menu menu) {
-        List<Ingredient> ingredients = ingredientRepository.findByMenu(menu);
-        return ingredients;
+    public Ingredient getIngredient(Menu menu) {
+        return ingredientRepository.findByMenu(menu);
     }
 
     public List<Menu> getMenus() {
         return menuRepository.findAll();
-    }
-
-    public BigDecimal getPurineByIngredient(Menu menu) {
-        List<Ingredient> ingredients = ingredientRepository.findByMenu(menu);
-        BigDecimal totalPurineAmount = BigDecimal.ZERO;
-        for (Ingredient ingredient : ingredients) {
-            totalPurineAmount = totalPurineAmount.add(ingredient.getPurine());
-        }
-        return totalPurineAmount;
     }
 }

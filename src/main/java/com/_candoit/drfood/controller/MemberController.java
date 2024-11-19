@@ -1,7 +1,6 @@
 package com._candoit.drfood.controller;
 
 import com._candoit.drfood.domain.Member;
-import com._candoit.drfood.domain.Risk;
 import com._candoit.drfood.enums.UserDisease;
 import com._candoit.drfood.req.LoginRequest;
 import com._candoit.drfood.service.MemberService;
@@ -39,8 +38,8 @@ public class MemberController {
     @PostMapping("/save-risk")
     public ResponseEntity<?> saveRisk(@RequestParam Long userId) {
         try {
-             riskService.create(userId);
-             return new ResponseEntity<>("Risk successfully saved!", HttpStatus.OK);
+            riskService.create(userId);
+            return new ResponseEntity<>("Risk successfully saved!", HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }

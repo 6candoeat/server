@@ -43,7 +43,7 @@ public class DiseaseMenuRiskService {
 
         if (member.getUserDisease().equals(UserDisease.GOUT)) {
             for (Menu menu : menus) {
-                BigDecimal totalPurineAmount = menuService.getPurineByIngredient(menu);
+                BigDecimal totalPurineAmount = menuService.getIngredient(menu).getPurine();
                 RiskLevel riskLevel = RiskLevelValidator.validateGout(totalPurineAmount);
                 if (riskLevel.equals(RiskLevel.SAFE)) {
                     safe++;
@@ -56,7 +56,7 @@ public class DiseaseMenuRiskService {
         }
         if (member.getDietControl().equals(DietControl.STRICT) && member.getUserDisease().equals(UserDisease.GOUT)) {
             for (Menu menu : menus) {
-                BigDecimal totalPurineAmount = menuService.getPurineByIngredient(menu);
+                BigDecimal totalPurineAmount = menuService.getIngredient(menu).getPurine();
                 RiskLevel riskLevel = RiskLevelValidator.validateStrictGout(totalPurineAmount);
                 if (riskLevel.equals(RiskLevel.SAFE)) {
                     safe++;
@@ -130,11 +130,11 @@ public class DiseaseMenuRiskService {
         DietControl dietControl = member.getDietControl();
         //퓨린 이외에는 영양성분으로 판단
         if (dietControl.equals(DietControl.STRICT) && member.getUserDisease().equals(UserDisease.GOUT)) {
-            BigDecimal totalPurineAmount = menuService.getPurineByIngredient(menu);
+            BigDecimal totalPurineAmount = menuService.getIngredient(menu).getPurine();
             return RiskLevelValidator.validateStrictGout(totalPurineAmount);
         }
         if (member.getUserDisease().equals(UserDisease.GOUT)) {
-            BigDecimal totalPurineAmount = menuService.getPurineByIngredient(menu);
+            BigDecimal totalPurineAmount = menuService.getIngredient(menu).getPurine();
             return RiskLevelValidator.validateGout(totalPurineAmount);
         }
         BigDecimal divisor = new BigDecimal("3");
