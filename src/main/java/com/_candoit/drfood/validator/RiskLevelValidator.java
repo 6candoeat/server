@@ -55,7 +55,7 @@ public class RiskLevelValidator {
                 transFat.compareTo(new BigDecimal("0.7")) < 0 &&
                 sodium.compareTo(new BigDecimal("900")) < 0 &&
                 sugar.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.1"))) < 0) {
-            return RiskLevel.SAFE; // 안전
+            return RiskLevel.MODERATE; // 안전
         }
         return RiskLevel.HIGH_RISK;
     }
@@ -86,7 +86,7 @@ public class RiskLevelValidator {
                 transFat.compareTo(new BigDecimal("0.66")) < 0 &&
                 sodium.compareTo(new BigDecimal("800")) < 0 &&
                 sugar.compareTo(dailyEnergyPerMeal.multiply(new BigDecimal("0.09"))) < 0) {
-            return RiskLevel.SAFE; // 안전
+            return RiskLevel.MODERATE; // 안전
         }
         return RiskLevel.HIGH_RISK;
     }

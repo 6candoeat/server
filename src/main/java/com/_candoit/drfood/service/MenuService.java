@@ -33,8 +33,8 @@ public class MenuService {
         return menuRepository.findMenusByStore(store, pageable);
     }
 
-    public Page<Menu> findMenusByStore(Store store, Pageable pageable) {
-        return menuRepository.findMenusByStore(store, pageable);
+    public List<Menu> findMenusByStore(Store store) {
+        return menuRepository.findMenusByStore(store);
     }
 
     public Menu getMenu(Long menuId) {

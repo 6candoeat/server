@@ -94,7 +94,7 @@ public class MenuController {
     private static class MenuGetRequest {
 
         private int page = 0;
-        private int limit = 30;
+        private int limit = 50;
     }
 
     @Data
