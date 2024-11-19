@@ -1,14 +1,16 @@
 package com._candoit.drfood.service;
 
+import com._candoit.drfood.utils.ImageUtil;
 import com.google.cloud.vision.v1.*;
 import com.google.protobuf.ByteString;
+import org.apache.tika.mime.MimeTypeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,14 +24,15 @@ public class GoogleVisionOCR {
     @Autowired
     private DrugQueryService drugQueryService;
 
-    public String execute(String imageUrl) throws IOException {
+    public String execute(String base64Image) throws IOException, MimeTypeException {
         StopWatch totalTime = new StopWatch();
         totalTime.start();
 
-        // 이미지 로드
-        URL url = new URL(imageUrl);
+
+        File tempFile = ImageUtil.base64ToFile("tempImage", base64Image);
+
         ByteString imgBytes;
-        try (InputStream in = url.openStream()) {
+        try (FileInputStream in = new FileInputStream(tempFile)) {
             imgBytes = ByteString.readFrom(in);
         }
 
