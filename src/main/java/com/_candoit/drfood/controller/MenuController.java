@@ -133,6 +133,7 @@ public class MenuController {
 
         private static MenuItem of(Menu menu, RiskLevel riskLevel) {
             MenuItem converted = new MenuItem();
+            converted.storeId = menu.getStore().getId();
             converted.menuId = menu.getMenuId();
             converted.menuName = menu.getMenuName();
             converted.description = menu.getDescription();
